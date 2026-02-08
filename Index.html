@@ -23,17 +23,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1);
-      background-size: 400% 400%;
-      animation: bgMove 12s ease infinite;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 25%, #fbc2eb 75%, #a18cd1 100%);
+      animation: bgShift 12s ease infinite;
       font-family: "Poppins", sans-serif;
       overflow: hidden;
     }
 
-    @keyframes bgMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    @keyframes bgShift {
+      0% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(10deg); }
+      100% { filter: hue-rotate(0deg); }
     }
 
     /* Card */
@@ -110,6 +109,11 @@
       transform: scale(0.94);
     }
 
+    button:focus {
+      outline: 2px solid #ff4d6d;
+      outline-offset: 2px;
+    }
+
     #yes {
       left: 12%;
       background: linear-gradient(135deg, #ff4d6d, #ff758f);
@@ -126,6 +130,10 @@
       left: 55%;
       background: rgba(255,255,255,0.9);
       color: #777;
+    }
+
+    #no:hover {
+      background: rgba(255,255,255,0.95);
     }
 
     .hint {
@@ -161,7 +169,7 @@
       .emoji { font-size: 58px; }
       button { padding: 12px 28px; font-size: 15px; }
       #yes { left: 8%; }
-      #no { left: 55%; }
+      #no { left: 52%; }
     }
   </style>
 </head>
@@ -173,16 +181,16 @@
     <h2>Simran Mela Bubuuuuuu,<br>will you be my Valentine?</h2>
 
     <div class="buttons">
-      <button id="yes">Yes 💖</button>
-      <button id="no">No 🙈</button>
+      <button id="yes" aria-label="Accept and be my Valentine">Yes 💖</button>
+      <button id="no" aria-label="Decline the proposal">No 🙈</button>
     </div>
 
-    <div class="hint">Some love stories don’t allow “no” ✨</div>
+    <div class="hint">Some love stories don't allow "no" ✨</div>
   </div>
 
   <!-- Sounds -->
-  <audio id="hoverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-voice-laugh-343.mp3"></audio>
-  <audio id="yesSound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
+  <audio id="hoverSound" type="audio/mpeg" src="https://assets.mixkit.co/sfx/preview/mixkit-cartoon-voice-laugh-343.mp3"></audio>
+  <audio id="yesSound" type="audio/mpeg" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3"></audio>
 
   <script>
     const noBtn = document.getElementById("no");
@@ -193,7 +201,7 @@
 
     noBtn.addEventListener("mouseenter", () => {
       hoverSound.currentTime = 0;
-      hoverSound.play();
+      hoverSound.play().catch(err => console.log('Hover sound play failed:', err));
 
       const cardRect = card.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
@@ -206,7 +214,7 @@
     });
 
     yesBtn.addEventListener("click", () => {
-      yesSound.play();
+      yesSound.play().catch(err => console.log('Yes sound play failed:', err));
 
       confetti({
         particleCount: 260,
@@ -215,14 +223,14 @@
       });
 
       setTimeout(() => {
-        alert("YAY 💕 I can’t wait for Valentine’s Day with you!");
+        alert("YAY 💕 I can't wait for Valentine's Day with you!");
       }, 500);
     });
 
     function createHeart() {
       const heart = document.createElement("div");
       heart.className = "heart";
-      heart.innerHTML = Math.random() > 0.5 ? "❤️" : "💗";
+      heart.textContent = Math.random() > 0.5 ? "❤️" : "💗";
       heart.style.left = Math.random() * 100 + "vw";
       heart.style.fontSize = Math.random() * 22 + 14 + "px";
       heart.style.animationDuration = Math.random() * 3 + 4 + "s";
